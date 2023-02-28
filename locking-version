@@ -1,0 +1,91 @@
+----
+terraform.tf
+----
+terraform {
+  required_providers {
+    random = {
+      source  = "hashicorp/random"
+      version = "3.0.0"
+    }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 2.0.0"
+    }
+  }
+
+  required_version = ">= 1.3"
+}
+#### file end here
+----
+main.tf
+----
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "random_pet" "petname" {
+  length    = 5
+  separator = "-"
+}
+
+resource "aws_s3_bucket" "sample" {
+  bucket = random_pet.petname.id
+
+  acl    = "public-read"
+  region = "ap-south-1"
+
+  tags = {
+    public_bucket = true
+  }
+}
+
+#### file end here
+
+### terraform init
+### now check the lock file - terraform.lock.hcl
+### As a best practice always include lock file for your VCS
+### 
+### You can upgrade all providers - terraform init --upgrade
+### now check the lock file
+###
+### warning - you might get errors while apply as certain options / parameters
+###           might be deprecated. So check 
+#### the NEW main.tf should look like this
+###
+main.tf
+###
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "random_pet" "petname" {
+  length    = 5
+  separator = "-"
+}
+
+resource "aws_s3_bucket" "sample" {
+  bucket = random_pet.petname.id
+
+  tags = {
+    public_bucket = true
+  }
+}
+
+resource "aws_s3_bucket_acl" "newfeature" {
+  bucket = aws_s3_bucket.sample.id
+  acl = "public-read"
+}
+
+### There are multiple arguments for specifying the version number. It’s probably a good idea to know
+### these:
+### • >= 1.41.0 is greater than or equal to the version.
+### • <= 1.41.0 is less than or equal to the version.
+### • ∼> 1.41.0 this one is funky. It means any version in the 1.41.X range.
+### • >= 1.20, <= 1.41 is any version between 1.20 and 1.41 inclusive.
+
+### One of the more common arguments is ∼> which is meant to keep you on the same major version,
+### while still allowing for minor version updates. For instance, let’s say there’s major change coming
+### to the Azure provider in version 2.0. By setting the version to ∼>1.0, you would allow all version 1
+### updates that come down while still blocking the big 2.0 release.
