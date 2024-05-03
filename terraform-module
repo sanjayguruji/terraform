@@ -1,4 +1,4 @@
-#Create a directory "nn-app"
+#Create a directory "sanjaya-app"
 #mkdir my-app
 #Create another directory "modules" inside "my-app"
 #mkdir -p my-app/modules
@@ -18,7 +18,7 @@ nn-app/
   
 ########
 
-Create a file vim nn-app/modules/ec2/instance.tf
+Create a file vim sanjaya-app/modules/ec2/instance.tf
 
 resource "aws_instance" "web" {
   count         = "${var.ec2_count}"
@@ -33,7 +33,7 @@ resource "aws_instance" "web" {
 
 ## file instance.tf end here
 
-Create a file vim nn-app/modules/ec2/vars.tf
+Create a file vim sanjaya-app/modules/ec2/vars.tf
 
 variable "ec2_count" {
   default = "1"
@@ -49,7 +49,7 @@ variable "subnet_id" {}
 
 ## file vars.tf end here
 
-#Create a file vim nn-app/modules/vpc/networking.tf
+#Create a file vim sanjaya-app/modules/vpc/networking.tf
 
 resource "aws_vpc" "main" {
   cidr_block       = "${var.vpc_cidr}"
@@ -79,7 +79,7 @@ output "subnet_id" {
 
 #file networking.tf end here
 
-## Create a file vim nn-app/modules/vpc/vars.tf
+## Create a file vim sanjaya-app/modules/vpc/vars.tf
 
 variable "vpc_cidr" {
   default = "10.0.0.0/16"
@@ -97,7 +97,7 @@ variable "subnet_cidr" {
 
 # file vars.tf end here
 
-# Create a file vim nn-app/dev/main.tf
+# Create a file vim sanjaya-app/dev/main.tf
 
 provider "aws" {
   region = "ap-south-1"
@@ -121,7 +121,7 @@ module "my_ec2" {
 
 # file main.tf end here
 
-# Create a file vim nn-app/prod/main.tf
+# Create a file vim sanjaya-app/prod/main.tf
 
 provider "aws" {
   region = "ap-south-1"
