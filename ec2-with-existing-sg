@@ -1,0 +1,53 @@
+data "aws_security_group" "previous-sg" {
+  id = "sg-00d3fef0da335dd67" #existing security group id
+}
+
+#code for elastic ip
+resource "aws_eip" "sanjaya-eip" {
+  instance = aws_instance.sanjaya-server.id
+}
+#inject my ssh-key
+resource "aws_key_pair" "terra_key" {
+  key_name   = "terra.key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDnFt9J/jBRWAc0lmk3zkqKcurnzl0zKZBq6bfjdRUpE90dzvkWIkaNmpe8Tqdeu/B6YUyTQHBAftgEXwKjCTPLxOIcEvYj2RsMoKAzDT8ti+eWHg5WMXDhdz4Gq4Y5gdUWTOyXFr7hbV0NSD/LO+YRakc85RTwNxomiM4mwyCsUO5XixHg8P6S9LwehefoBKN/psDCcKJU/Hx0wrJvhQBuYf3YdpCM5iW4uVztIgUd4VKn4OWwexEXJdizGhAI4ooFRjVyStGmba9oj8H75hhoSLoungaiU8xJX/4bW9FQrrqcEDP0rM+YLcknYulrYkI66PPL0TUaToeVOJosGmC6Njl3Hs3MoYAds0u2uG9AYjf5YLTEl5jiAK5Qb/kEcPsaC3bxeEHSCWcGkc+6FFXoVmF2yiMB5lsRpL04unGuFALbltkW0Oh3Wvp7QAHj87cE8COuArD5f2Oc6zBURF4DnP1ASKbJh1dsY6nmPhNchrvjCcIEXlNihJyQWpXThqk= root@terra.example.com"
+}
+
+resource "aws_instance" "sanjaya-server" {
+  ami                     = "ami-0e97ea97a2f374e3d"
+  availability_zone       = "ap-southeast-1a"
+  instance_type           = "t2.micro"
+  key_name                = "terra.key"
+  vpc_security_group_ids = [data.aws_security_group.previous-sg.id]
+  /* First of generate ssh key and share public ssh key with AWS 
+   and you can execute code*/
+
+#root disk
+root_block_device {
+  volume_size           = "25"
+  volume_type           = "gp2"
+  delete_on_termination = true
+}
+
+#additional data disk
+ebs_block_device {
+  device_name           = "/dev/xvdb"
+  volume_size           = "10"
+  volume_type           = "gp2"
+  delete_on_termination = true
+}
+
+user_data = <<-EOF
+        #!/bin/bash
+        sudo yum install httpd -y
+        sudo systemctl start httpd
+        sudo systemctl enable httpd
+        echo "<h1>sample webserver using terraform</h1>" | sudo tee /var/www/html/index.html
+  EOF
+
+tags = {
+  Name     = "hello-India"
+  Stage    = "testing"
+  Location = "India"
+ }                                                                                                                                                                           83,1          97%
+
+
