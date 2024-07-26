@@ -12,6 +12,7 @@ resource "aws_vpc" "test-vpc" {
 # this is Subnet code
 resource "aws_subnet" "public-subnet" {
   vpc_id     = aws_vpc.test-vpc.id
+   availability_zone = "ap-south-1a"
   cidr_block = "10.0.0.0/24"
 
   tags = {
@@ -22,6 +23,7 @@ resource "aws_subnet" "public-subnet" {
 
 resource "aws_subnet" "private-subnet" {
   vpc_id     = aws_vpc.test-vpc.id
+  availability_zone = "ap-south-1b"
   cidr_block = "10.0.1.0/24"
 
   tags = {
