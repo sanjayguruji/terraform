@@ -9,7 +9,7 @@ variable  "isprod"  {
 #create Ec2 instances
 resource  "aws_instance" "myec2" {
     count = (var.isprod) ? 2:1
-    ami = "ami-074dc0a6f6c764218"
+    ami = "ami-068e0f1a600cd311c"
     instance_type = "t2.micro"
       tags  = {
           Name  = "Hello-Terra"
