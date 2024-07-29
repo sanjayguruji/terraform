@@ -1,0 +1,8 @@
+###Create AWS AMI from AWS INStance
+resource "aws_ami_from_instance" "my-images" {
+  name               = "terra-image"
+  source_instance_id = "i-08378f82f606e2542"
+}
+tags = {
+    Name = "Hello-world"
+  }
