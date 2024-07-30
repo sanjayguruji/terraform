@@ -24,3 +24,13 @@ resource "aws_volume_attachment" "ebs_att" {
   volume_id   = aws_ebs_volume.data-vol.id
   instance_id = aws_instance.web.id
  }
+
+#create snapshot
+
+resource "aws_ebs_snapshot" "example_snapshot" {
+  volume_id = aws_ebs_volume.data-vol.id
+
+  tags = {
+    Name = "HelloWorld_snap"
+  }
+}
